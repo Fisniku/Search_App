@@ -11,7 +11,6 @@ document.addEventListener("readystatechange",(event)=> {
 const initApp = () => {
     setSearchFocus();
 
-    //TODO: 3 listeners clear text
     const search = document.getElementById("search");
     search.addEventListener("input", showClearTextButton);
 
@@ -22,23 +21,30 @@ const initApp = () => {
 
     const form = document.getElementById("searchBar");
     form.addEventListener("submit", submitTheSearch);
+
+    const lucky = document.getElementById("luckyButton");
+    lucky.addEventListener("click",submitTheLuckySearch)
 }
 
 //Procedural "workflow" function
-const submitTheSearch = (event) => {
+const submitTheSearch = (event,luckySearch=false) => {
     event.preventDefault();
     deleteSearchResults();
-    processTheSearch();
+    processTheSearch(luckySearch);
     setSearchFocus();
 }
 
+const submitTheLuckySearch = (event) => {
+    event.preventDefault();
+    submitTheSearch(event,true);
+}
+
 //Procedural
-const processTheSearch = async () => {
+const processTheSearch = async (luckySearch) => {
     clearStatsLine();
-    const searchTerm = getSearchTerm();
+    const searchTerm = await getSearchTerm(luckySearch);
     if (searchTerm === "") return;
     const resultArray = await retrieveSearchResults(searchTerm);
     if(resultArray.length) buildSearchResults(resultArray);
     setStatsLine(resultArray.length);
-
 }

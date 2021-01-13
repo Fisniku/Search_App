@@ -1,9 +1,31 @@
-export const getSearchTerm = () => {
-    const rawSearchTerm = document.getElementById("search").value.trim();
-    const regex = /[ ]{2,}/gi;
-    const searchTerm = rawSearchTerm.replaceAll(regex, " ");
+import {showClearTextButton} from "./searchBar.js"
+
+export const getSearchTerm = async (luckySearch = false) => {
+    let searchTerm = "";
+
+    if(luckySearch) {
+        //User has clicked on "I"m feeling lucky", therefore generate results for a random string
+        searchTerm =  await getWikiRandomString();
+        //Add value in the search input
+        document.getElementById("search").value = searchTerm;
+        //Display the clear button
+        showClearTextButton(); 
+    } else {
+        //Regular search
+        const rawSearchTerm = document.getElementById("search").value.trim();
+        const regex = /[ ]{2,}/gi;
+        searchTerm = rawSearchTerm.replaceAll(regex, " ");
+    }
+    
     return searchTerm;
 };
+
+const getWikiRandomString = async () => {
+    const searchString = encodeURI('https://en.wikipedia.org/w/api.php?action=query&list=random&rnnamespace=0&format=json&origin=*');
+    const wikiRandomPageInfo = await requestData(searchString);
+    const wikiRandomString = wikiRandomPageInfo.query.random[0].title;
+    return wikiRandomString;
+}
 
 export const retrieveSearchResults = async (searchTerm) => {
     const wikiSearchString = getWikiSearchString(searchTerm);
@@ -12,6 +34,7 @@ export const retrieveSearchResults = async (searchTerm) => {
     if (wikiSearchResults.hasOwnProperty("query")) {
         resultArray = processWikiResults(wikiSearchResults.query.pages);
     }
+
     return resultArray;
 };
 
@@ -19,6 +42,7 @@ const getWikiSearchString = (searchTerm) => {
     const maxChars = getMaxChars();
     const rawSearchString = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${searchTerm}&gsrlimit=20&prop=pageimages|extracts&exchars=${maxChars}&exintro&explaintext&exlimit=max&format=json&origin=*`;
     const searchString = encodeURI(rawSearchString);
+
     return searchString;
 };
 
@@ -28,6 +52,7 @@ const getMaxChars = () => {
     if (width < 414) maxChars = 65;
     if (width >= 414 && width < 1400) maxChars = 100;
     if (width >= 1400) maxChars = 130;
+
     return maxChars;
 };
 
@@ -56,6 +81,7 @@ const processWikiResults = (results) => {
         };
         resultArray.push(item);
     });
+
     return resultArray;
 }
 
