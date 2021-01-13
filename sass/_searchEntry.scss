@@ -96,6 +96,68 @@
         }      
     }
 
+    .luckyButton {
+        background-color: white;
+        border: 1px solid $logo-red;
+        border-radius: 100px;
+        color:black;
+        padding: 0.25rem 0.5rem;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 0.6rem;
+        margin: 10px 2px;
+        transition-duration: 0.6s;
+        cursor: pointer;
+        @include mq(768px){
+            width: 20vw;
+        }
+        @include mq(1025px){
+            width: 25vw;
+        }
+    }
+
+    .luckyButton:hover,
+    .luckyButton:focus {  
+        background-color: $logo-red;
+        color: white;
+        box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+    }
+
+    .luckyButton:active {
+        // background-color: #dfeee0;
+        box-shadow: 0 5px $logo-red;
+        transform: translate(4px);
+    }
+
+    .luckyButton span:after {
+        font-family: "Font Awesome 5 Free";
+        content: "\f4da";
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+        font-weight: 900;
+        margin-left: 5px;
+    }
+    
+    .luckyButton:hover span {
+        padding-right: 15px;
+    }
+
+    .luckyButton:hover span:after {
+        opacity: 1;
+        right: 0;
+    }
+
+    .luckyButton span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.5s;
+    }
+
     .searchBar:hover,
     .searchBar:focus {
         box-shadow: 0 2px 5px 2px $search-bar-border;
