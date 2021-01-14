@@ -39,8 +39,18 @@ export const retrieveSearchResults = async (searchTerm) => {
 };
 
 const getWikiSearchString = (searchTerm) => {
+    const page = parseInt(document.getElementsByClassName("paginate active")[0].text);
+    let gsroffset = null;
+    if(page != 1){
+        gsroffset = page + 5; 
+
+    }
+    console.log('gsroffset',gsroffset)
     const maxChars = getMaxChars();
-    const rawSearchString = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${searchTerm}&gsrlimit=20&prop=pageimages|extracts&exchars=${maxChars}&exintro&explaintext&exlimit=max&format=json&origin=*`;
+    let rawSearchString = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${searchTerm}&gsrlimit=5&prop=pageimages|extracts&exchars=${maxChars}&exintro&explaintext&exlimit=max&format=json&origin=*`;
+    
+    if(gsroffset) rawSearchString += `&gsroffset=${gsroffset}`
+
     const searchString = encodeURI(rawSearchString);
 
     return searchString;
@@ -83,5 +93,25 @@ const processWikiResults = (results) => {
     });
 
     return resultArray;
+}
+
+export const setActiveLinkInPagination = (id) => {
+    const activeLink = document.getElementsByClassName("paginate active")[0];    
+    let link = '';
+    if(id == 'paginateFowrard') {
+         link = document.getElementById(activeLink.nextSibling.nextSibling.id);
+    } else if (id == 'paginateBack') {
+        link = document.getElementById(activeLink.previousSibling.previousSibling.id);
+    } else {
+        link = document.getElementById(id);
+    }
+    
+    if(['paginateFowrard', 'paginateBack'].includes(link.id)) return;
+    activeLink.classList.remove("active");
+    link.classList.add("active");
+}
+
+export const setPaginationOnFooter = () => {
+    document.getElementsByClassName("pagination")[0].classList.remove("none");
 }
 

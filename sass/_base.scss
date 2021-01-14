@@ -73,6 +73,30 @@ footer {
     }
 }
 
+.pagination {
+    // display: none;
+    display: inline-block;
+}
+
+.pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+}
+
+.pagination a.active {
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    border: 1px solid $logo-blue;
+}
+
+.pagination a:hover:not(.active) {
+    background-color: #ddd;
+    border-radius: 5px;
+}
+
 img {
     display: block;
 }
