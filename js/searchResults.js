@@ -1,3 +1,4 @@
+import {clearSearchText} from "./searchBar.js"
 export const deleteSearchResults = () => {
     const parentElement = document.getElementById("searchResults");
     let child = parentElement.lastElementChild;
@@ -83,8 +84,9 @@ const removePagination = () => {
     document.getElementsByClassName("pagination")[0].classList.add("none");
 }
 
-export const returnToDefaultPageView = () => {
+export const returnToDefaultPageView = (event) => {
     deleteSearchResults();
     removeStatsLine();
     removePagination();
+    clearSearchText(event);
 }

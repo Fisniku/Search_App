@@ -38,7 +38,7 @@ const initApp = () => {
 }
 
 const returnToHomePage = (event) => {
-    returnToDefaultPageView();
+    returnToDefaultPageView(event);
 }
 
 const clickPaginate = (event) =>{
