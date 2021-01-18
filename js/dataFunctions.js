@@ -42,10 +42,8 @@ const getWikiSearchString = (searchTerm) => {
     const page = parseInt(document.getElementsByClassName("paginate active")[0].text);
     let gsroffset = null;
     if(page != 1){
-        gsroffset = page + 5; 
-
+        gsroffset = page * 5;
     }
-    console.log('gsroffset',gsroffset)
     const maxChars = getMaxChars();
     let rawSearchString = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${searchTerm}&gsrlimit=5&prop=pageimages|extracts&exchars=${maxChars}&exintro&explaintext&exlimit=max&format=json&origin=*`;
     
