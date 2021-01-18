@@ -70,3 +70,21 @@ export const setStatsLine = (numberOfResults) => {
         statsLine.textContent = "Sorry, no results.";
     }
 }
+
+const removeStatsLine = () => {
+    document.getElementById("stats").style.display = "none";
+}
+
+export const addStyleToStatsLine = () => {
+    document.getElementById("stats").style.display = "";
+}
+
+const removePagination = () => {
+    document.getElementsByClassName("pagination")[0].classList.add("none");
+}
+
+export const returnToDefaultPageView = () => {
+    deleteSearchResults();
+    removeStatsLine();
+    removePagination();
+}
