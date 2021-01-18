@@ -1,5 +1,5 @@
 import { setSearchFocus, showClearTextButton, clearSearchText, clearPushListener } from "./searchBar.js";
-import { deleteSearchResults, buildSearchResults, clearStatsLine, setStatsLine, returnToDefaultPageView, addStyleToStatsLine} from "./searchResults.js";
+import { deleteSearchResults, buildSearchResults, clearStatsLine, setStatsLine, returnToDefaultPageView, addStyleToStatsLine, startLoading, endLoading} from "./searchResults.js";
 import { getSearchTerm, retrieveSearchResults, setActiveLinkInPagination, setPaginationOnFooter} from "./dataFunctions.js";
 
 document.addEventListener("readystatechange",(event)=> {
@@ -51,6 +51,7 @@ const clickPaginate = (event) =>{
 //Procedural "workflow" function
 const submitTheSearch = (event,luckySearch=false) => {
     event.preventDefault();
+    startLoading();
     deleteSearchResults();
     processTheSearch(luckySearch);
     setSearchFocus();
@@ -71,4 +72,5 @@ const processTheSearch = async (luckySearch) => {
     addStyleToStatsLine();
     setStatsLine(resultArray.length);
     setPaginationOnFooter();
+    endLoading();
 }

@@ -90,3 +90,11 @@ export const returnToDefaultPageView = (event) => {
     removePagination();
     clearSearchText(event);
 }
+
+export const startLoading = () => {
+    document.getElementById("loader").classList.remove("none");
+}
+
+export const endLoading = () => {
+    document.getElementById("loader").classList.add("none");
+}
