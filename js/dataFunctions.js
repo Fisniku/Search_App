@@ -27,8 +27,8 @@ const getWikiRandomString = async () => {
     return wikiRandomString;
 }
 
-export const retrieveSearchResults = async (searchTerm) => {
-    const wikiSearchString = getWikiSearchString(searchTerm);
+export const retrieveSearchResults = async (searchTerm, resultPerPage=10) => {
+    const wikiSearchString = getWikiSearchString(searchTerm, resultPerPage);
     const wikiSearchResults = await requestData(wikiSearchString);
     let resultArray = [];
     if (wikiSearchResults.hasOwnProperty("query")) {
@@ -38,14 +38,14 @@ export const retrieveSearchResults = async (searchTerm) => {
     return resultArray;
 };
 
-const getWikiSearchString = (searchTerm) => {
+const getWikiSearchString = (searchTerm, resultPerPage) => {
     const page = parseInt(document.getElementsByClassName("paginate active")[0].text);
     let gsroffset = null;
     if(page != 1){
         gsroffset = page * 5;
     }
     const maxChars = getMaxChars();
-    let rawSearchString = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${searchTerm}&gsrlimit=5&prop=pageimages|extracts&exchars=${maxChars}&exintro&explaintext&exlimit=max&format=json&origin=*`;
+    let rawSearchString = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${searchTerm}&gsrlimit=${resultPerPage}&prop=pageimages|extracts&exchars=${maxChars}&exintro&explaintext&exlimit=max&format=json&origin=*`;
     
     if(gsroffset) rawSearchString += `&gsroffset=${gsroffset}`
 

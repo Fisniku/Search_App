@@ -11,6 +11,9 @@ document.addEventListener("readystatechange",(event)=> {
 const initApp = () => {
     setSearchFocus();
 
+    const resultsPerPage = document.getElementById("resultsPerPage");
+    resultsPerPage.addEventListener("change",setResultsPerPage);
+
     const logo = document.getElementById("logo");
     logo.addEventListener("click", returnToHomePage);
 
@@ -26,7 +29,7 @@ const initApp = () => {
     form.addEventListener("submit", submitTheSearch);
 
     const lucky = document.getElementById("luckyButton");
-    lucky.addEventListener("click",submitTheLuckySearch)
+    lucky.addEventListener("click",submitTheLuckySearch);
 
     //Pagination event listeners
     const paginationLinks = document.getElementsByClassName("paginate");
@@ -35,10 +38,17 @@ const initApp = () => {
             paginationLinks[key].addEventListener("click", clickPaginate, false)
         }
     }
+
+
 }
 
 const returnToHomePage = (event) => {
     returnToDefaultPageView(event);
+}
+
+const setResultsPerPage = (event) => {
+    event.preventDefault();
+    console.log("event",event.target.value)
 }
 
 const clickPaginate = (event) =>{
@@ -67,7 +77,8 @@ const processTheSearch = async (luckySearch) => {
     clearStatsLine();
     const searchTerm = await getSearchTerm(luckySearch);
     if (searchTerm === "") return;
-    const resultArray = await retrieveSearchResults(searchTerm);
+    const resultPerPage = document.getElementById("resultsPerPage").value;
+    const resultArray = await retrieveSearchResults(searchTerm, resultPerPage);
     if(resultArray.length) buildSearchResults(resultArray);
     addStyleToStatsLine();
     setStatsLine(resultArray.length);
