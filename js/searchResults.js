@@ -1,3 +1,4 @@
+import {clearSearchText} from "./searchBar.js"
 export const deleteSearchResults = () => {
     const parentElement = document.getElementById("searchResults");
     let child = parentElement.lastElementChild;
@@ -69,4 +70,23 @@ export const setStatsLine = (numberOfResults) => {
     }else {
         statsLine.textContent = "Sorry, no results.";
     }
+}
+
+const removeStatsLine = () => {
+    document.getElementById("stats").style.display = "none";
+}
+
+export const addStyleToStatsLine = () => {
+    document.getElementById("stats").style.display = "";
+}
+
+const removePagination = () => {
+    document.getElementsByClassName("pagination")[0].classList.add("none");
+}
+
+export const returnToDefaultPageView = (event) => {
+    deleteSearchResults();
+    removeStatsLine();
+    removePagination();
+    clearSearchText(event);
 }

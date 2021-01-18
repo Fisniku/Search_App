@@ -1,5 +1,5 @@
 import { setSearchFocus, showClearTextButton, clearSearchText, clearPushListener } from "./searchBar.js";
-import { deleteSearchResults, buildSearchResults, clearStatsLine, setStatsLine } from "./searchResults.js";
+import { deleteSearchResults, buildSearchResults, clearStatsLine, setStatsLine, returnToDefaultPageView, addStyleToStatsLine} from "./searchResults.js";
 import { getSearchTerm, retrieveSearchResults, setActiveLinkInPagination, setPaginationOnFooter} from "./dataFunctions.js";
 
 document.addEventListener("readystatechange",(event)=> {
@@ -10,6 +10,9 @@ document.addEventListener("readystatechange",(event)=> {
 
 const initApp = () => {
     setSearchFocus();
+
+    const logo = document.getElementById("logo");
+    logo.addEventListener("click", returnToHomePage);
 
     const search = document.getElementById("search");
     search.addEventListener("input", showClearTextButton);
@@ -32,6 +35,10 @@ const initApp = () => {
             paginationLinks[key].addEventListener("click", clickPaginate, false)
         }
     }
+}
+
+const returnToHomePage = (event) => {
+    returnToDefaultPageView(event);
 }
 
 const clickPaginate = (event) =>{
@@ -60,8 +67,8 @@ const processTheSearch = async (luckySearch) => {
     const searchTerm = await getSearchTerm(luckySearch);
     if (searchTerm === "") return;
     const resultArray = await retrieveSearchResults(searchTerm);
-    console.log(resultArray);
     if(resultArray.length) buildSearchResults(resultArray);
+    addStyleToStatsLine();
     setStatsLine(resultArray.length);
     setPaginationOnFooter();
 }
