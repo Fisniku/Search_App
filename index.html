@@ -51,7 +51,11 @@
         </section>
     </main>
     <footer>
-        <div>
+            <p>
+                <span aria-hidden="true">&lt;&lt;</span>Powered by 
+                <a href="https://www.wikipedia.org" target="_blank">Wikipedia</a>
+                <span aria-hidden="true">&gt;&gt;</span>
+            </p>
             <div class="pagination none">
                 <a id="paginateBack" class="paginate" href="#">&laquo;</a>
                 <a id="paginate1" class="paginate active" href="#">1</a>
@@ -62,13 +66,15 @@
                 <a id="paginate6" class="paginate" href="#">6</a>
                 <a id="paginateFowrard" class="paginate" href="#">&raquo;</a>
             </div>
-            <p>
-                <span aria-hidden="true">&lt;&lt;</span>Powered by 
-                <a href="https://www.wikipedia.org" target="_blank">Wikipedia</a>
-                <span aria-hidden="true">&gt;&gt;</span>
-            </p>
-        </div>
-        
+            <div class="resultsPerPage">
+                <label for="resultsPerPage">Results/page:</label>
+                <select name="resultsPerPage" id="resultsPerPage">
+                <option value="5">5</option>
+                <option value="10" selected="selected">10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+                </select>
+            </div>        
     </footer>
 </body>
 </html>
