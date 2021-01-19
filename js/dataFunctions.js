@@ -27,7 +27,7 @@ const getWikiRandomString = async () => {
     return wikiRandomString;
 }
 
-export const retrieveSearchResults = async (searchTerm, resultPerPage=10) => {
+export const retrieveSearchResults = async (searchTerm, resultPerPage) => {
     const wikiSearchString = getWikiSearchString(searchTerm, resultPerPage);
     const wikiSearchResults = await requestData(wikiSearchString);
     let resultArray = [];

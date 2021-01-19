@@ -48,7 +48,7 @@ const returnToHomePage = (event) => {
 
 const setResultsPerPage = (event) => {
     event.preventDefault();
-    console.log("event",event.target.value)
+    submitTheSearch(event);
 }
 
 const clickPaginate = (event) =>{
