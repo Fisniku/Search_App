@@ -11,17 +11,32 @@ document.addEventListener("readystatechange",(event)=> {
 const initApp = () => {
     setSearchFocus();
 
+    // Radio buttons event listeners
+    var radios = document.forms["searchType"].elements["radio"];
+    for(var i = 0, max = radios.length; i < max; i++) {
+        // radios[i].onclick = function() {
+            radios[i].addEventListener("change", changeSearchMethod);
+        // }
+    }
+
+    //Search button event listener
     const search = document.getElementById("search");
     search.addEventListener("input", showClearTextButton);
 
+    // const imageSearch = document.getElementById("imageSearch");
+    // imageSearch.addEventListener("click", searchImages);
+
+    //Clear button event listener
     const clear = document.getElementById("clear");
     clear.addEventListener("click", clearSearchText);
     
     clear.addEventListener("keydown", clearPushListener);
 
+    //Form event listener
     const form = document.getElementById("searchBar");
     form.addEventListener("submit", submitTheSearch);
 
+    //Lucky search button event listener
     const lucky = document.getElementById("luckyButton");
     lucky.addEventListener("click",submitTheLuckySearch)
 
@@ -34,6 +49,12 @@ const initApp = () => {
     }
 }
 
+const changeSearchMethod = (event) => {
+    event.preventDefault();
+    console.info('changeSearchMethod:',event.target.value);
+    submitTheSearch(event);
+}
+
 const clickPaginate = (event) =>{
     event.preventDefault();
     //Set active link in pagination
@@ -42,7 +63,7 @@ const clickPaginate = (event) =>{
 }
 
 //Procedural "workflow" function
-const submitTheSearch = (event,luckySearch=false) => {
+const submitTheSearch = (event, luckySearch=false) => {
     event.preventDefault();
     deleteSearchResults();
     processTheSearch(luckySearch);

@@ -12,6 +12,7 @@
 </head>
 <body>
     <main>
+        <!-- <button class="imageSearch" id="imageSearch">Image Search</button> -->
         <h1 class="offscreen">Search Me a Wikipedia Powered Search Engine</h1>
         <section class="searchEntry">
             <h2 class="offscreen">Search Term Entry</h2>
@@ -36,7 +37,26 @@
                     <i class="fas fa-search blue"></i>
                 </button>
             </form>
-            <button id="luckyButton" type="submit" class="button luckyButton"><span>I'm Feeling Lucky! </span </button>
+            <div>
+                <button id="luckyButton" type="submit" class="button luckyButton"><span>I'm Feeling Lucky! </span </button>
+            </div>
+            <form name="searchType" class="searchType">
+                <h4>Choose search method:</h4>
+                <div class="radioDiv">
+                    <label class="container">Text
+                        <input type="radio" checked="checked" name="radio" value="text">
+                        <span class="checkmark"></span>
+                        </label>
+                        <label class="container">Image
+                        <input type="radio" name="radio" value="image">
+                        <span class="checkmark"></span>
+                        </label>
+                        <!-- <label class="container">Video
+                        <input type="radio" name="radio" value="video">
+                        <span class="checkmark"></span> -->
+                    </label>
+                </div>
+            </form>
         </section>
         <section class="results">
             <h2 class="offscreen">Search Results</h2>
