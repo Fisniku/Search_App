@@ -81,7 +81,7 @@ const processTheSearch = async (luckySearch) => {
     const searchTerm = await getSearchTerm(luckySearch);
     if (searchTerm === "") return;
     const resultArray = await retrieveSearchResults(searchTerm);
-    console.log(resultArray);
+    console.log('resultArray',resultArray);
     if(resultArray.length) buildSearchResults(resultArray);
     setStatsLine(resultArray.length);
     setPaginationOnFooter();

@@ -28,23 +28,58 @@ const getWikiRandomString = async () => {
 }
 
 export const retrieveSearchResults = async (searchTerm) => {
+    const searchMethod = getSearchMethod();
     let resultArray = [];
-    const wikiSearchString = getWikiSearchString(searchTerm);
-    const wikiSearchResults = await requestData(wikiSearchString);
-    console.log("🚀 ~ file: dataFunctions.js ~ line 34 ~ retrieveSearchResults ~ wikiSearchResults", wikiSearchResults)
-    
-    if (wikiSearchResults.hasOwnProperty("query")) {
-        resultArray = processWikiResults(wikiSearchResults.query.pages);
+
+    switch(searchMethod){
+        case 'text':
+            const wikiSearchString = getWikiSearchString(searchTerm);
+            const wikiSearchResults = await requestData(wikiSearchString);
+            console.log("🚀 ~ file: dataFunctions.js ~ line 34 ~ retrieveSearchResults ~ wikiSearchResults", wikiSearchResults)
+            
+            if (wikiSearchResults.hasOwnProperty("query")) {
+                resultArray = processWikiResults(wikiSearchResults.query.pages);
+            }
+        break;
+        case 'image':
+            // First api call -> get the name of file 
+           let firstApiCall = `https://en.wikipedia.org/w/api.php?action=query&titles=${searchTerm}&prop=images&format=json&origin=*`;
+            const rawFileNames = await requestData(firstApiCall);
+            const fileNames = prepareFileNames(rawFileNames);
+            console.log("🚀 ~ file: dataFunctions.js ~ line 66 ~ getWikiSearchString ~ fileNames", fileNames)
+            // Second api call -> get the href of that image
+            // rawSearchString = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages|pageterms&generator=prefixsearch&redirects=1&formatversion=2&piprop=thumbnail&pithumbsize=${maxThumbSize}&pilimit=50&wbptterms=description&gpssearch=${searchTerm}&gpslimit=5&origin=*`;
+            let secondApiCall = '';
+            const promisesToAwait = []
+            fileNames.forEach((fileName) => {
+                // console.log('fileName',fileName)
+                secondApiCall = `https://en.wikipedia.org/w/api.php?action=query&titles=${fileName}&prop=imageinfo&iiprop=url&format=json&origin=*`;
+                // const imageResults = await requestData(secondApiCall);
+                promisesToAwait.push(requestData(secondApiCall));
+            })
+            const responses = await Promise.all(promisesToAwait);
+            // let urls = [];
+            responses.forEach((image) => {
+                Object.keys(image.query.pages).forEach((page) => {
+                    image.query.pages[page].imageinfo.forEach((img) => {
+                        resultArray.push({'img' : img.url});
+                    })
+                })
+            })
+
+ 
+            console.log('imageResults',responses)
+            // console.log('urls',urls)
+
+            // if(gsroffset) rawSearchString += `&gpsoffset=${gsroffset}`
+        break;
     }
 
     return resultArray;
-
 };
 
 const getWikiSearchString = (searchTerm) => {
-    console.log('document.getElementsByName("radio")[1].checked',document.getElementsByName("radio")[1].checked)
     const page = parseInt(document.getElementsByClassName("paginate active")[0].text);
-    const searchMethod = getSearchMethod();
     let gsroffset = null;
     if(page != 1){
         gsroffset = page * 5;
@@ -52,30 +87,8 @@ const getWikiSearchString = (searchTerm) => {
     const maxChars = getMaxChars();
     const maxThumbSize = getMaxThumbSize();
 
-    let rawSearchString = ''
-    switch(searchMethod){
-        case 'text':
-            rawSearchString = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${searchTerm}&gsrlimit=5&prop=pageimages|extracts&exchars=${maxChars}&exintro&explaintext&exlimit=max&format=json&origin=*`;
-            if(gsroffset) rawSearchString += `&gsroffset=${gsroffset}`
-        break;
-        case 'image':
-            //First api call -> get the name of file 
-            rawSearchString = `https://en.wikipedia.org/w/api.php?action=query&titles=${searchTerm}&prop=images&format=json&origin=*`;
-            const rawFileNames = await requestData(rawSearchString);
-            const fileNames = prepareFileNames(rawFileNames);
-            console.log("🚀 ~ file: dataFunctions.js ~ line 66 ~ getWikiSearchString ~ fileNames", fileNames)
-            return
-            //Second api call -> get the href of that image
-
-            // rawSearchString = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages|pageterms&generator=prefixsearch&redirects=1&formatversion=2&piprop=thumbnail&pithumbsize=${maxThumbSize}&pilimit=50&wbptterms=description&gpssearch=${searchTerm}&gpslimit=5&origin=*`;
-            // if(gsroffset) rawSearchString += `&gpsoffset=${gsroffset}`
-
-        break;
-        case 'video':
-            // rawSearchString = `https://www.mediawiki.org/w/api.php?action=query&titles=File:ASC Leiden - van de Bruinhorst Collection - Somaliland 2019 - 4480 - Two young red cats (one male) and one black cat, Hargeisa.webm&prop=videoinfo&viprop=derivatives&format=json&origin=*`;
-        break;
-    }
-    
+    let rawSearchString = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${searchTerm}&gsrlimit=5&prop=pageimages|extracts&exchars=${maxChars}&exintro&explaintext&exlimit=max&format=json&origin=*`;
+    if(gsroffset) rawSearchString += `&gsroffset=${gsroffset}`;
 
     const searchString = encodeURI(rawSearchString);
 
