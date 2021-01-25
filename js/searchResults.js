@@ -1,3 +1,5 @@
+import {getSearchMethod} from './dataFunctions.js';
+
 export const deleteSearchResults = () => {
     const parentElement = document.getElementById("searchResults");
     let child = parentElement.lastElementChild;
@@ -8,20 +10,45 @@ export const deleteSearchResults = () => {
 };
 
 export const buildSearchResults = (resultArray) => {
-    resultArray.forEach(result => {
-        const resultItem = createResultItem(result);
-        const resultContents = document.createElement("div");
-        resultContents.classList.add("resultContents");
-        if (result.img) {
-            const resultImage = createResultImage(result);
-            resultContents.append(resultImage);
-        }
-        const resultText = createResultText(result);
-        resultContents.append(resultText);
-        resultItem.append(resultContents);
-        const searchResults = document.getElementById("searchResults");
-        searchResults.append(resultItem);
-    });
+    const searchMethod = getSearchMethod();
+    switch(searchMethod){
+        case 'text':
+            resultArray.forEach(result => {
+                const resultItem = createResultItem(result);
+                const resultContents = document.createElement("div");
+                resultContents.classList.add("resultContents");
+                if (result.img) {
+                    const resultImage = createResultImage(result);
+                    resultContents.append(resultImage);
+                }
+                const resultText = createResultText(result);
+                resultContents.append(resultText);
+                resultItem.append(resultContents);
+                const searchResults = document.getElementById("searchResults");
+                searchResults.append(resultItem);
+            });
+        break;
+        case 'image':
+            const resultItem = createResultItem(result);
+
+            const resultOnlyImagesDiv = document.createElement("div");
+            resultOnlyImagesDiv.classList.add("resultOnlyImages");
+            const rowDiv = document.createElement("div");
+            rowDiv.classList.add("row");
+            const columnDiv = document.createElement("div");
+            columnDiv.classList.add("column");
+            resultArray.forEach((image, key) => {
+                const img = document.createElement("img");
+                img.src = image;
+                // img.alt = result.title;
+                columnDiv.append(img);
+                // resultContents.append(resultImage);
+                const searchResults = document.getElementById("searchResults");
+                searchResults.append(resultItem);
+            })
+        break;
+    }
+
 }
 
 const createResultItem = (result) => {

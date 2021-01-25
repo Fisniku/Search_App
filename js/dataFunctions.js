@@ -62,14 +62,10 @@ export const retrieveSearchResults = async (searchTerm) => {
             responses.forEach((image) => {
                 Object.keys(image.query.pages).forEach((page) => {
                     image.query.pages[page].imageinfo.forEach((img) => {
-                        resultArray.push({'img' : img.url});
+                        resultArray.push(img.url);
                     })
                 })
             })
-
- 
-            console.log('imageResults',responses)
-            // console.log('urls',urls)
 
             // if(gsroffset) rawSearchString += `&gpsoffset=${gsroffset}`
         break;
@@ -105,7 +101,7 @@ const prepareFileNames = (rawFileNames) => {
     return fileNames;
 }
 
-const getSearchMethod = () => {
+export const getSearchMethod = () => {
     const radios = document.getElementsByName('radio');
     let searchMethod = 'text';
     for (var i = 0, length = radios.length; i < length; i++) {
