@@ -29,23 +29,24 @@ export const buildSearchResults = (resultArray) => {
             });
         break;
         case 'image':
-            const resultItem = createResultItem(result);
+            const searchResults = document.getElementById('searchResults');
 
             const resultOnlyImagesDiv = document.createElement("div");
             resultOnlyImagesDiv.classList.add("resultOnlyImages");
+
             const rowDiv = document.createElement("div");
             rowDiv.classList.add("row");
-            const columnDiv = document.createElement("div");
-            columnDiv.classList.add("column");
+
             resultArray.forEach((image, key) => {
+                const columnDiv = document.createElement("div");
+                columnDiv.classList.add("column");
                 const img = document.createElement("img");
                 img.src = image;
-                // img.alt = result.title;
                 columnDiv.append(img);
-                // resultContents.append(resultImage);
-                const searchResults = document.getElementById("searchResults");
-                searchResults.append(resultItem);
+                rowDiv.append(columnDiv);
             })
+            resultOnlyImagesDiv.append(rowDiv);
+            searchResults.append(resultOnlyImagesDiv);
         break;
     }
 

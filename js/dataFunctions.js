@@ -67,7 +67,7 @@ export const retrieveSearchResults = async (searchTerm) => {
                 })
             })
 
-            // if(gsroffset) rawSearchString += `&gpsoffset=${gsroffset}`
+            // imcontinue=6678|Cat_skull.jpg => pagination
         break;
     }
 
@@ -95,7 +95,13 @@ const prepareFileNames = (rawFileNames) => {
     let fileNames = [];
     Object.keys(rawFileNames.query.pages).forEach((page) => {
         Object.keys(rawFileNames.query.pages[page].images).forEach((image) => {
-            fileNames.push(rawFileNames.query.pages[page].images[image].title)
+            const fileName = rawFileNames.query.pages[page].images[image].title;
+            const extention = fileName.substring(
+                fileName.lastIndexOf(".") + 1
+            );
+
+            //filename different from video extention
+            if(!["ogv", "webm"].includes(extention)) fileNames.push(fileName)
         })
     })
     return fileNames;
