@@ -11,6 +11,14 @@ document.addEventListener("readystatechange",(event)=> {
 const initApp = () => {
     setSearchFocus();
 
+    // Radio buttons event listeners
+    var radios = document.forms["searchType"].elements["radio"];
+    for(var i = 0, max = radios.length; i < max; i++) {
+        // radios[i].onclick = function() {
+            radios[i].addEventListener("change", changeSearchMethod);
+        // }
+    }
+
     const resultsPerPage = document.getElementById("resultsPerPage");
     resultsPerPage.addEventListener("change",setResultsPerPage);
 
@@ -40,6 +48,11 @@ const initApp = () => {
     }
 
 
+}
+
+const changeSearchMethod = (event) => {
+    event.preventDefault();
+    submitTheSearch(event);
 }
 
 const returnToHomePage = (event) => {
@@ -76,7 +89,10 @@ const submitTheLuckySearch = (event) => {
 const processTheSearch = async (luckySearch) => {
     clearStatsLine();
     const searchTerm = await getSearchTerm(luckySearch);
-    if (searchTerm === "") return;
+    if (searchTerm === "") {
+        endLoading();
+        return;
+    }
     const resultPerPage = document.getElementById("resultsPerPage").value;
     const resultArray = await retrieveSearchResults(searchTerm, resultPerPage);
     if(resultArray.length) buildSearchResults(resultArray);

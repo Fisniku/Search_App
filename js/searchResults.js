@@ -1,4 +1,6 @@
 import {clearSearchText} from "./searchBar.js"
+import {getSearchMethod} from './dataFunctions.js';
+
 export const deleteSearchResults = () => {
     const parentElement = document.getElementById("searchResults");
     let child = parentElement.lastElementChild;
@@ -9,20 +11,46 @@ export const deleteSearchResults = () => {
 };
 
 export const buildSearchResults = (resultArray) => {
-    resultArray.forEach(result => {
-        const resultItem = createResultItem(result);
-        const resultContents = document.createElement("div");
-        resultContents.classList.add("resultContents");
-        if (result.img) {
-            const resultImage = createResultImage(result);
-            resultContents.append(resultImage);
-        }
-        const resultText = createResultText(result);
-        resultContents.append(resultText);
-        resultItem.append(resultContents);
-        const searchResults = document.getElementById("searchResults");
-        searchResults.append(resultItem);
-    });
+    const searchMethod = getSearchMethod();
+    switch(searchMethod){
+        case 'text':
+            resultArray.forEach(result => {
+                const resultItem = createResultItem(result);
+                const resultContents = document.createElement("div");
+                resultContents.classList.add("resultContents");
+                if (result.img) {
+                    const resultImage = createResultImage(result);
+                    resultContents.append(resultImage);
+                }
+                const resultText = createResultText(result);
+                resultContents.append(resultText);
+                resultItem.append(resultContents);
+                const searchResults = document.getElementById("searchResults");
+                searchResults.append(resultItem);
+            });
+        break;
+        case 'image':
+            const searchResults = document.getElementById('searchResults');
+
+            const resultOnlyImagesDiv = document.createElement("div");
+            resultOnlyImagesDiv.classList.add("resultOnlyImages");
+
+            const rowDiv = document.createElement("div");
+            rowDiv.classList.add("row");
+
+            resultArray.forEach((image, key) => {
+                const columnDiv = document.createElement("div");
+                columnDiv.classList.add("column");
+                const img = document.createElement("img");
+                img.src = image;
+                columnDiv.append(img);
+                rowDiv.append(columnDiv);
+            })
+            resultOnlyImagesDiv.append(rowDiv);
+            searchResults.append(resultOnlyImagesDiv);
+        break;
+    }
+
 }
 
 const createResultItem = (result) => {

@@ -27,16 +27,82 @@ const getWikiRandomString = async () => {
     return wikiRandomString;
 }
 
-export const retrieveSearchResults = async (searchTerm, resultPerPage) => {
-    const wikiSearchString = getWikiSearchString(searchTerm, resultPerPage);
-    const wikiSearchResults = await requestData(wikiSearchString);
+export const retrieveSearchResults = async (searchTerm,  resultPerPage) => {
+    const searchMethod = getSearchMethod();
     let resultArray = [];
-    if (wikiSearchResults.hasOwnProperty("query")) {
-        resultArray = processWikiResults(wikiSearchResults.query.pages);
+
+    switch(searchMethod){
+        case 'text':
+            const wikiSearchString = getWikiSearchString(searchTerm, resultPerPage);
+            const wikiSearchResults = await requestData(wikiSearchString);
+            
+            if (wikiSearchResults.hasOwnProperty("query")) {
+                resultArray = processWikiResults(wikiSearchResults.query.pages);
+            }
+        break;
+        case 'image':
+            // First api call -> get the name of file 
+           let firstApiCall = `https://en.wikipedia.org/w/api.php?action=query&titles=${searchTerm}&prop=images&format=json&origin=*`;
+            const rawFileNames = await requestData(firstApiCall);
+            const fileNames = prepareFileNames(rawFileNames);
+            // Second api call -> get the href of that image
+            // rawSearchString = `https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages|pageterms&generator=prefixsearch&redirects=1&formatversion=2&piprop=thumbnail&pithumbsize=${maxThumbSize}&pilimit=50&wbptterms=description&gpssearch=${searchTerm}&gpslimit=5&origin=*`;
+            let secondApiCall = '';
+            const promisesToAwait = []
+            fileNames.forEach((fileName) => {
+                // console.log('fileName',fileName)
+                secondApiCall = `https://en.wikipedia.org/w/api.php?action=query&titles=${fileName}&prop=imageinfo&iiprop=url&format=json&origin=*`;
+                // const imageResults = await requestData(secondApiCall);
+                promisesToAwait.push(requestData(secondApiCall));
+            })
+            const responses = await Promise.all(promisesToAwait);
+            // let urls = [];
+            responses.forEach((image) => {
+                Object.keys(image.query.pages).forEach((page) => {
+                    image.query.pages[page].imageinfo.forEach((img) => {
+                        resultArray.push(img.url);
+                    })
+                })
+            })
+
+            // imcontinue=6678|Cat_skull.jpg => pagination
+        break;
     }
 
     return resultArray;
 };
+
+const prepareFileNames = (rawFileNames) => {
+    let fileNames = [];
+    Object.keys(rawFileNames.query.pages).forEach((page) => {
+        Object.keys(rawFileNames.query.pages[page].images).forEach((image) => {
+            const fileName = rawFileNames.query.pages[page].images[image].title;
+            const extention = fileName.substring(
+                fileName.lastIndexOf(".") + 1
+            );
+
+            //filename different from video extention
+            if(!["ogv", "webm"].includes(extention)) fileNames.push(fileName)
+        })
+    })
+    return fileNames;
+}
+
+export const getSearchMethod = () => {
+    const radios = document.getElementsByName('radio');
+    let searchMethod = 'text';
+    for (var i = 0, length = radios.length; i < length; i++) {
+        if (radios[i].checked) {
+            // do whatever you want with the checked radio
+            searchMethod = radios[i].value;
+
+            // only one radio can be logically checked, don't check the rest
+            break;
+        }
+    }
+
+    return searchMethod;
+}
 
 const getWikiSearchString = (searchTerm, resultPerPage) => {
     const page = parseInt(document.getElementsByClassName("paginate active")[0].text);
